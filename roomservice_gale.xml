@@ -1,0 +1,39 @@
+<!-- mkdir -p .repo/local_manifests/ && nano .repo/local_manifests/roomservice_gale.xml -->
+<manifest>
+  <!-- Define “github” as a remote pointing to GitHub.com
+  <remote  name="github"
+           fetch="https://github.com/"
+           />
+  -->
+
+  <!-- Device Tree -->
+  <project name="Mayuri-Chan/android_device_xiaomi_gale"
+           path="device/xiaomi/gale"
+           revision="lineage-22.2"
+           remote="github"/>
+  <!-- Vendor Blobs -->
+  <project name="Mayuri-Chan/proprietary_vendor_xiaomi_gale"
+           path="vendor/xiaomi/gale"
+           revision="lineage-22.2"
+           remote="github"/>
+  <!-- Kernel Source -->
+  <project name="Mayuri-Chan/android_kernel_xiaomi_gale"
+           path="kernel/xiaomi/gale"
+           revision="stable"
+           remote="github"/>
+  <!-- Lineage's android_hardware_mediatek -->
+  <project name="LineageOS/android_hardware_mediatek"
+           path="hardware/mediatek"
+           revision="lineage-22.2"
+           remote="github"/>
+  <!-- Lineage's android_hardware_xiaomi -->
+  <project name="LineageOS/android_hardware_xiaomi"
+           path="hardware/xiaomi"
+           revision="lineage-22.2"
+           remote="github"/>
+  <!-- Lineage's android_device_mediatek_sepolicy_vndr -->
+  <project name="LineageOS/android_device_mediatek_sepolicy_vndr"
+           path="device/mediatek/sepolicy_vndr"
+           revision="lineage-22.2"
+           remote="github"/>
+</manifest>
