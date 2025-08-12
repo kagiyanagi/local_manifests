@@ -22,14 +22,14 @@
            revision="dev/16"
            remote="github"/>
   <!-- Lineage's android_hardware_mediatek -->
-  <project name="LineageOS/android_hardware_mediatek"
+  <project name="Aeron-Aeron/hardware_mediatek"
            path="hardware/mediatek"
-           revision="lineage-22.2"
+           revision="lineage-23.0"
            remote="github"/>
   <!-- Lineage's android_hardware_xiaomi -->
-  <project name="LineageOS/android_hardware_xiaomi"
+  <project name="Aeron-Aeron/hardware_xiaomi"
            path="hardware/xiaomi"
-           revision="lineage-22.2"
+           revision="lineage-23.0"
            remote="github"/>
   <!-- Lineage's android_device_mediatek_sepolicy_vndr -->
   <project name="Aeron-Aeron/device_mediatek_sepolicy_vndr"
