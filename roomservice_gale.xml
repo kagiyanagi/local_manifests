@@ -9,17 +9,17 @@
   <!-- Device Tree -->
   <project name="Mayuri-Chan/android_device_xiaomi_gale"
            path="device/xiaomi/gale"
-           revision="lineage-22.2"
+           revision="dev/sixteen"
            remote="github"/>
   <!-- Vendor Blobs -->
   <project name="Mayuri-Chan/proprietary_vendor_xiaomi_gale"
            path="vendor/xiaomi/gale"
-           revision="lineage-22.2"
+           revision="dev/sixteen"
            remote="github"/>
   <!-- Kernel Source -->
   <project name="Mayuri-Chan/android_kernel_xiaomi_gale"
            path="kernel/xiaomi/gale"
-           revision="stable"
+           revision="dev/16"
            remote="github"/>
   <!-- Lineage's android_hardware_mediatek -->
   <project name="LineageOS/android_hardware_mediatek"
@@ -32,8 +32,8 @@
            revision="lineage-22.2"
            remote="github"/>
   <!-- Lineage's android_device_mediatek_sepolicy_vndr -->
-  <project name="LineageOS/android_device_mediatek_sepolicy_vndr"
+  <project name="Aeron-Aeron/device_mediatek_sepolicy_vndr"
            path="device/mediatek/sepolicy_vndr"
-           revision="lineage-22.2"
+           revision="lineage-23.0"
            remote="github"/>
 </manifest>
