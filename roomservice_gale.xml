@@ -9,12 +9,12 @@
   <!-- Device Tree -->
   <project name="Mayuri-Chan/android_device_xiaomi_gale"
            path="device/xiaomi/gale"
-           revision="dev/sixteen"
+           revision="sixteen"
            remote="github"/>
   <!-- Vendor Blobs -->
   <project name="Mayuri-Chan/proprietary_vendor_xiaomi_gale"
            path="vendor/xiaomi/gale"
-           revision="dev/sixteen"
+           revision="sixteen"
            remote="github"/>
   <!-- Kernel Source -->
   <project name="Mayuri-Chan/android_kernel_xiaomi_gale"
