@@ -1,4 +1,3 @@
-<!-- mkdir -p .repo/local_manifests/ && nano .repo/local_manifests/roomservice_gale.xml -->
 <manifest>
   <!-- Define “github” as a remote pointing to GitHub.com
   <remote  name="github"
@@ -22,18 +21,24 @@
            revision="dev/16"
            remote="github"/>
   <!-- Lineage's android_hardware_mediatek -->
-  <project name="Aeron-Aeron/hardware_mediatek"
+  <project name="LineageOS/android_hardware_mediatek"
            path="hardware/mediatek"
            revision="lineage-23.0"
            remote="github"/>
   <!-- Lineage's android_hardware_xiaomi -->
-  <project name="Aeron-Aeron/hardware_xiaomi"
+  <project name="LineageOS/android_hardware_xiaomi"
            path="hardware/xiaomi"
            revision="lineage-23.0"
            remote="github"/>
   <!-- Lineage's android_device_mediatek_sepolicy_vndr -->
-  <project name="Aeron-Aeron/device_mediatek_sepolicy_vndr"
+  <project name="LineageOS/android_device_mediatek_sepolicy_vndr"
            path="device/mediatek/sepolicy_vndr"
            revision="lineage-23.0"
            remote="github"/>
+  <!-- Mediatek IMS vendor 
+  <project name="techyminati/android_vendor_mediatek_ims"
+           path="vendor/mediatek/ims"
+           revision="android-16"
+           remote="github"/>
+  -->
 </manifest>
