@@ -18,11 +18,6 @@ export BUILD_HOSTNAME="Kagiyanagi"
 # cd ~/Code/$ROM
 
 rm -rf .repo/local_manifests
-rm -rf device/mediatek/sepolicy_vndr
-rm -rf hardware/xiaomi
-rm -rf hardware/mediatek
-rm -rf vendor/mediatek/ims
-rm -rf vendor/lineage-priv/keys
 
 repo init -u $MANIFEST_URL -b $BRANCH --git-lfs --depth=1
 repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
