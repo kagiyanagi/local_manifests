@@ -36,7 +36,7 @@ if [ ! -d "device/${ROM}/sepolicy/libperfmgr" ]; then
     rm -rf "$TMP_DIR"
     mkdir -p "$TMP_DIR"
 
-    git clone https://github.com/LineageOS/android_device_lineage_sepolicy -b 23.2 "$TMP_DIR"
+    git clone https://github.com/LineageOS/android_device_lineage_sepolicy -b lineage-23.2 "$TMP_DIR"
     mv "$TMP_DIR/libperfmgr" "device/${ROM}/sepolicy/"
     rm -rf "$TMP_DIR"
     echo "libperfmgr moved successfully."
