@@ -18,6 +18,14 @@ export BUILD_HOSTNAME="Kagiyanagi"
 # cd ~/Code/$ROM
 
 rm -rf .repo/local_manifests
+rm -rf device/xiaomi/gale
+rm -rf vendor/xiaomi/gale
+rm -rf kernel/xiaomi/gale
+rm -rf device/mediatek/sepolicy_vndr
+rm -rf hardware/xiaomi
+rm -rf hardware/mediatek
+rm -rf vendor/mediatek/ims/
+rm -rf vendor/lineage-priv/keys
 
 repo init -u "$MANIFEST_URL" -b "$BRANCH" --git-lfs --depth=1
 # repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
@@ -60,5 +68,5 @@ cd ../../../
 
 source build/envsetup.sh
 lunch ${ROM}_gale-$(find "$(gettop)/build/release/aconfig" -maxdepth 1 -mindepth 1 -type d -name "[a-z][a-z][0-9][a-z]" -printf '%f\n' | tail -n1)-userdebug
-# make installclean
+make installclean
 m bacon -j$(nproc --all)
