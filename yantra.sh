@@ -20,7 +20,8 @@ export BUILD_HOSTNAME="Kagiyanagi"
 rm -rf .repo/local_manifests
 
 repo init -u "$MANIFEST_URL" -b "$BRANCH" --git-lfs --depth=1
-repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
+# repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
+ /opt/crave/resync.sh
 
 git clone https://github.com/xaveroprjkt/device_xiaomi_gale.git device/xiaomi/gale -b lineage-23.2 --depth=1
 sed -i 's|read -rp "Do you want to clone the signing keys? (y/N): " a|a=y|' device/xiaomi/gale/vendorsetup.sh
