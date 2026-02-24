@@ -18,7 +18,7 @@
   <!-- Kernel Source -->
   <project name="Mayuri-Chan/android_kernel_xiaomi_gale"
            path="kernel/xiaomi/gale"
-           revision="dev/16"
+           revision="stable"
            remote="github"/>
   <!-- Lineage's android_hardware_mediatek -->
   <project name="LineageOS/android_hardware_mediatek"
