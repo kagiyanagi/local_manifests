@@ -35,10 +35,9 @@
            path="device/mediatek/sepolicy_vndr"
            revision="lineage-23.0"
            remote="github"/>
-  <!-- Mediatek IMS vendor 
+  <!-- Mediatek IMS vendor -->
   <project name="techyminati/android_vendor_mediatek_ims"
            path="vendor/mediatek/ims"
            revision="android-16"
            remote="github"/>
-  -->
 </manifest>
