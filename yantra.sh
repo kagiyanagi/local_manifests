@@ -3,7 +3,7 @@ set -e
 
 ROM="cipher"
 MANIFEST_URL="https://github.com/CipherOS/android_manifest.git"
-BRANCH="sixteen-qpr2"
+BRANCH="sixteen"
 
 export BUILD_USERNAME="Ren"
 export BUILD_HOSTNAME="Kagiyanagi"
@@ -26,16 +26,16 @@ rm -rf hardware/xiaomi
 rm -rf hardware/mediatek
 rm -rf vendor/mediatek/ims/
 rm -rf vendor/lineage-priv/keys
+rm -rf device/cipher/sepolicy
 
 repo init -u "$MANIFEST_URL" -b "$BRANCH" --git-lfs --depth=1
+mkdir -p .repo/local_manifests/
+wget -O .repo/local_manifests/roomservice_gale.xml https://raw.githubusercontent.com/kagiyanagi/local_manifests/refs/heads/bliss/roomservice_gale.xml
 # repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
  /opt/crave/resync.sh
 
-git clone https://github.com/xaveroprjkt/device_xiaomi_gale.git device/xiaomi/gale -b lineage-23.2 --depth=1
-sed -i 's|read -rp "Do you want to clone the signing keys? (y/N): " a|a=y|' device/xiaomi/gale/vendorsetup.sh
-source build/envsetup.sh
-
 # fix android_device_mediatek_sepolicy_vndr
+git clone https://github.com/CipherOS/android_device_cipher_sepolicy -b sixteen device/cipher/sepolicy
 sed -i "4s|include device/lineage/sepolicy/libperfmgr/sepolicy.mk|include device/${ROM}/sepolicy/libperfmgr/sepolicy.mk|" device/mediatek/sepolicy_vndr/SEPolicy.mk
 if [ ! -d "device/${ROM}/sepolicy/libperfmgr" ]; then
     echo "libperfmgr not found. Cloning and copying..."
@@ -44,8 +44,7 @@ if [ ! -d "device/${ROM}/sepolicy/libperfmgr" ]; then
     rm -rf "$TMP_DIR"
     mkdir -p "$TMP_DIR"
 
-    git clone https://github.com/LineageOS/android_device_lineage_sepolicy -b lineage-23.2 "$TMP_DIR"
-    git clone https://github.com/CipherOS/android_device_cipher_sepolicy -b sixteen device/cipher/sepolicy
+    git clone https://github.com/LineageOS/android_device_lineage_sepolicy -b lineage-23.0 "$TMP_DIR"
     mv "$TMP_DIR/libperfmgr" "device/${ROM}/sepolicy/"
     rm -rf "$TMP_DIR"
     echo "libperfmgr moved successfully."
