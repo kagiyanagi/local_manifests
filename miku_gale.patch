@@ -1,0 +1,562 @@
+
+project bionic/
+diff --git a/libc/include/sched.h b/libc/include/sched.h
+index c68ebf0..8754f5e 100644
+--- a/libc/include/sched.h
++++ b/libc/include/sched.h
+@@ -96,9 +96,11 @@ __BEGIN_DECLS
+  * See sched_getparam()/sched_setparam() and
+  * sched_getscheduler()/sched_setscheduler().
+  */
++#if !defined(_LINUX_SCHED_TYPES_H)
+ struct sched_param {
+   int sched_priority;
+ };
++#endif
+ 
+ /**
+  * [sched_setscheduler(2)](https://man7.org/linux/man-pages/man2/sched_setscheduler.2.html)
+
+project build/make/
+diff --git a/envsetup.sh b/envsetup.sh
+index 6da8e20..e5060e0 100644
+--- a/envsetup.sh
++++ b/envsetup.sh
+@@ -1168,3 +1168,9 @@ addcompletions
+ 
+ export ANDROID_BUILD_TOP=$(gettop)
+ 
++export BUILD_USERNAME="ren"
++export BUILD_HOSTNAME="kagiyanagi"
++
++# Conf for kernel
++# export KBUILD_BUILD_USER="ColoroXKernel"
++# export KBUILD_BUILD_HOST="Μσση🌙"
+
+project device/mediatek/sepolicy_vndr/
+diff --git a/SEPolicy.mk b/SEPolicy.mk
+index 942b8b4..ee187f5 100644
+--- a/SEPolicy.mk
++++ b/SEPolicy.mk
+@@ -1,7 +1,7 @@
+ # Board specific SELinux policy variable definitions
+ MTK_SEPOLICY_PATH := device/mediatek/sepolicy_vndr
+ 
+-include device/voltage/sepolicy/libperfmgr/sepolicy.mk
++include device/miku/sepolicy/libperfmgr/sepolicy.mk
+ 
+ ifeq ($(BOARD_MTK_SEPOLICY_IS_LEGACY), true)
+ # Build with broken namespaces
+diff --git a/basic/non_plat/factory.te b/basic/non_plat/factory.te
+index 141a103..f42b5c6 100644
+--- a/basic/non_plat/factory.te
++++ b/basic/non_plat/factory.te
+@@ -375,8 +375,10 @@ allow factory sysfs_dt_firmware_android:file r_file_perms;
+ allow factory sysfs_dt_firmware_android:dir r_dir_perms;
+ 
+ # For power_supply and switch permission
+-r_dir_file(factory, sysfs_batteryinfo)
+-r_dir_file(factory, sysfs_switch)
++allow factory sysfs_batteryinfo:dir r_dir_perms;
++allow factory sysfs_batteryinfo:file r_file_perms;
++allow factory sysfs_switch:dir r_dir_perms;
++allow factory sysfs_switch:file r_file_perms;
+ 
+ # Date : WK18.31
+ # Operation: P migration
+diff --git a/basic/non_plat/fuelgauged.te b/basic/non_plat/fuelgauged.te
+index a7dbfb0..4f08a94 100644
+--- a/basic/non_plat/fuelgauged.te
++++ b/basic/non_plat/fuelgauged.te
+@@ -52,7 +52,8 @@ allow fuelgauged nvcfg_file:file create_file_perms;
+ # Date: W18.17
+ # Operation : add label for /sys/devices/platform/battery(/.*)
+ # Purpose : add fuelgauged could access
+-r_dir_file(fuelgauged, sysfs_batteryinfo)
++allow fuelgauged sysfs_batteryinfo:dir r_dir_perms;
++allow fuelgauged sysfs_batteryinfo:file r_file_perms;
+ 
+ # Date : WK18.21
+ # Operation: P migration
+diff --git a/basic/non_plat/fuelgauged_nvram.te b/basic/non_plat/fuelgauged_nvram.te
+index 9114614..b0bd655 100644
+--- a/basic/non_plat/fuelgauged_nvram.te
++++ b/basic/non_plat/fuelgauged_nvram.te
+@@ -42,7 +42,8 @@ allow fuelgauged_nvram nvcfg_file:file create_file_perms;
+ # Date: W18.17
+ # Operation : add label for /sys/devices/platform/battery(/.*)
+ # Purpose : add fuelgauged could access
+-r_dir_file(fuelgauged_nvram, sysfs_batteryinfo)
++allow fuelgauged_nvram sysfs_batteryinfo:dir r_dir_perms;
++allow fuelgauged_nvram sysfs_batteryinfo:file r_file_perms;
+ 
+ 
+ # Date : WK18.21
+diff --git a/basic/non_plat/hal_audio_default.te b/basic/non_plat/hal_audio_default.te
+index 81a925a..4f42246 100644
+--- a/basic/non_plat/hal_audio_default.te
++++ b/basic/non_plat/hal_audio_default.te
+@@ -8,7 +8,8 @@ allow hal_audio_default ion_device:chr_file r_file_perms;
+ 
+ allow hal_audio_default system_file:dir r_dir_perms;
+ 
+-r_dir_file(hal_audio_default, proc)
++allow hal_audio_default proc:dir r_dir_perms;
++allow hal_audio_default proc:file r_file_perms;
+ allow hal_audio_default audio_device:dir r_dir_perms;
+ allow hal_audio_default audio_device:chr_file rw_file_perms;
+ 
+diff --git a/basic/non_plat/hal_memtrack_default.te b/basic/non_plat/hal_memtrack_default.te
+index 7554c6f..ed92c73 100644
+--- a/basic/non_plat/hal_memtrack_default.te
++++ b/basic/non_plat/hal_memtrack_default.te
+@@ -1 +1,2 @@
+-r_dir_file(hal_memtrack_default, sysfs_gpu)
++allow hal_memtrack_default sysfs_gpu:dir r_dir_perms;
++allow hal_memtrack_default sysfs_gpu:file r_file_perms;
+diff --git a/basic/non_plat/hal_power_default.te b/basic/non_plat/hal_power_default.te
+index adc4c4b..8c51f79 100644
+--- a/basic/non_plat/hal_power_default.te
++++ b/basic/non_plat/hal_power_default.te
+@@ -1,9 +1,12 @@
+ # To do powerhint on nodes defined in powerhint.json
+-rw_dir_file(hal_power_default, proc_perfmgr)
+-rw_dir_file(hal_power_default, proc_ppm)
++allow hal_power_default proc_perfmgr:dir r_dir_perms;
++allow hal_power_default proc_perfmgr:file rw_file_perms;
+ 
+-r_dir_file(hal_power_default, sysfs_dvfsrc_devfreq)
+-r_dir_file(hal_power_default, proc_gpufreqv2)
++allow hal_power_default proc_ppm:dir r_dir_perms;
++allow hal_power_default proc_ppm:file rw_file_perms;
+ 
++allow hal_power_default sysfs_dvfsrc_devfreq:dir r_dir_perms;
+ allow hal_power_default sysfs_dvfsrc_devfreq:file rw_file_perms;
++
++allow hal_power_default proc_gpufreqv2:dir r_dir_perms;
+ allow hal_power_default proc_gpufreqv2:file rw_file_perms;
+diff --git a/basic/non_plat/hal_thermal_default.te b/basic/non_plat/hal_thermal_default.te
+index c9691af..c56a349 100644
+--- a/basic/non_plat/hal_thermal_default.te
++++ b/basic/non_plat/hal_thermal_default.te
+@@ -2,7 +2,8 @@
+ # Common SEPolicy Rule
+ # ==============================================
+ 
+-r_dir_file(hal_thermal_default, sysfs_therm)
++allow hal_thermal_default sysfs_therm:dir r_dir_perms;
++allow hal_thermal_default sysfs_therm:file r_file_perms;
+ allow hal_thermal_default sysfs_therm:file w_file_perms;
+ 
+ allow hal_thermal_default thermal_link_device:dir r_dir_perms;
+diff --git a/basic/non_plat/init-thermal-symlinks.sh.te b/basic/non_plat/init-thermal-symlinks.sh.te
+index 227f2ad..d84b0cc 100644
+--- a/basic/non_plat/init-thermal-symlinks.sh.te
++++ b/basic/non_plat/init-thermal-symlinks.sh.te
+@@ -7,6 +7,7 @@ allow init-thermal-symlinks-sh vendor_toolbox_exec:file rx_file_perms;
+ allow init-thermal-symlinks-sh thermal_link_device:dir rw_dir_perms;
+ allow init-thermal-symlinks-sh thermal_link_device:lnk_file create_file_perms;
+ 
+-r_dir_file(init-thermal-symlinks-sh, sysfs_therm)
++allow init-thermal-symlinks-sh sysfs_therm:dir r_dir_perms;
++allow init-thermal-symlinks-sh sysfs_therm:file r_file_perms;
+ 
+ set_prop(init-thermal-symlinks-sh, vendor_thermal_prop)
+diff --git a/basic/non_plat/mtk_hal_bluetooth.te b/basic/non_plat/mtk_hal_bluetooth.te
+index 0bccd29..9ad99e7 100644
+--- a/basic/non_plat/mtk_hal_bluetooth.te
++++ b/basic/non_plat/mtk_hal_bluetooth.te
+@@ -14,7 +14,8 @@ hal_server_domain(mtk_hal_bluetooth, hal_bluetooth)
+ binder_call(mtk_hal_bluetooth, bluetooth)
+ 
+ # bluetooth factory file accesses.
+-r_dir_file(mtk_hal_bluetooth, bluetooth_efs_file)
++allow mtk_hal_bluetooth bluetooth_efs_file:dir r_dir_perms;
++allow mtk_hal_bluetooth bluetooth_efs_file:file r_file_perms;
+ 
+ allow mtk_hal_bluetooth { uhid_device hci_attach_dev }:chr_file rw_file_perms;
+ 
+diff --git a/basic/non_plat/mtk_hal_nvramagent.te b/basic/non_plat/mtk_hal_nvramagent.te
+index f4c66e9..f9fad0c 100644
+--- a/basic/non_plat/mtk_hal_nvramagent.te
++++ b/basic/non_plat/mtk_hal_nvramagent.te
+@@ -51,6 +51,7 @@ allow mtk_hal_nvramagent mnt_vendor_file:dir search;
+ 
+ allow mtk_hal_nvramagent sysfs_boot_mode:file r_file_perms;
+ 
+-r_dir_file(mtk_hal_nvramagent, sysfs_dt_firmware_android)
++allow mtk_hal_nvramagent sysfs_dt_firmware_android:dir r_dir_perms;
++allow mtk_hal_nvramagent sysfs_dt_firmware_android:file r_file_perms;
+ 
+ allow mtk_hal_nvramagent sysfs_dt_firmware_android:file r_file_perms;
+diff --git a/basic/non_plat/mtk_hal_usb.te b/basic/non_plat/mtk_hal_usb.te
+index ae777d9..4bd2559 100644
+--- a/basic/non_plat/mtk_hal_usb.te
++++ b/basic/non_plat/mtk_hal_usb.te
+@@ -9,7 +9,8 @@ init_daemon_domain(mtk_hal_usb)
+ hal_server_domain(mtk_hal_usb, hal_usb)
+ hal_server_domain(mtk_hal_usb, hal_usb_gadget)
+ 
+-r_dir_file(mtk_hal_usb, sysfs_usb_nonplat)
++allow mtk_hal_usb sysfs_usb_nonplat:dir r_dir_perms;
++allow mtk_hal_usb sysfs_usb_nonplat:file r_file_perms;
+ allow mtk_hal_usb sysfs_usb_nonplat:file w_file_perms;
+ 
+ allow mtk_hal_usb configfs:file create_file_perms;
+diff --git a/basic/non_plat/rebalance_interrupts.te b/basic/non_plat/rebalance_interrupts.te
+index 46deba8..e7f7e88 100644
+--- a/basic/non_plat/rebalance_interrupts.te
++++ b/basic/non_plat/rebalance_interrupts.te
+@@ -10,4 +10,5 @@ allow rebalance_interrupts_vendor proc_irq:dir r_dir_perms;
+ allow rebalance_interrupts_vendor proc_irq:file { rw_file_perms setattr };
+ allow rebalance_interrupts_vendor self:capability { chown setuid setgid };
+ 
+-r_dir_file(rebalance_interrupts_vendor, sysfs_devices_system_cpu)
++allow rebalance_interrupts_vendor sysfs_devices_system_cpu:dir r_dir_perms;
++allow rebalance_interrupts_vendor sysfs_devices_system_cpu:file r_file_perms;
+diff --git a/basic/non_plat/smartcharging.te b/basic/non_plat/smartcharging.te
+index 6757604..d27addb 100644
+--- a/basic/non_plat/smartcharging.te
++++ b/basic/non_plat/smartcharging.te
+@@ -36,5 +36,6 @@ allow smartcharging self:capability { fsetid };
+ # Date: W18.17
+ # Operation : add label for /sys/devices/platform/battery(/.*)
+ # Purpose : add smartcharging could access
+-r_dir_file(smartcharging, sysfs_batteryinfo)
++allow smartcharging sysfs_batteryinfo:dir r_dir_perms;
++allow smartcharging sysfs_batteryinfo:file r_file_perms;
+ 
+diff --git a/basic/non_plat/system_app.te b/basic/non_plat/system_app.te
+index d6c26f1..c00ae78 100644
+--- a/basic/non_plat/system_app.te
++++ b/basic/non_plat/system_app.te
+@@ -27,7 +27,8 @@ hal_client_domain(system_app, hal_mtk_hdmi)
+ allow system_app self:netlink_kobject_uevent_socket { read bind create setopt };
+ 
+ # system_app need to read from sysfs /sys/class/switch/hdmi/state
+-r_dir_file(system_app, sysfs_switch)
++allow system_app sysfs_switch:dir r_dir_perms;
++allow system_app sysfs_switch:file r_file_perms;
+ 
+ # Date: 2020/06/08
+ # Purpose: Allow system app to access mtk jpeg
+diff --git a/basic/plat_private/mtkbootanimation.te b/basic/plat_private/mtkbootanimation.te
+index 1f978eb..9050166 100644
+--- a/basic/plat_private/mtkbootanimation.te
++++ b/basic/plat_private/mtkbootanimation.te
+@@ -40,7 +40,8 @@ allow mtkbootanimation hal_graphics_composer:fd use;
+ 
+ # Read access to pseudo filesystems.
+ allow mtkbootanimation proc_meminfo:file r_file_perms;
+-r_dir_file(mtkbootanimation, cgroup)
++allow mtkbootanimation cgroup:dir r_dir_perms;
++allow mtkbootanimation cgroup:file r_file_perms;
+ 
+ # System file accesses.
+ allow mtkbootanimation system_file:dir r_dir_perms;
+diff --git a/bsp/non_plat/mtk_hal_dfps.te b/bsp/non_plat/mtk_hal_dfps.te
+index 862cc07..39127dd 100644
+--- a/bsp/non_plat/mtk_hal_dfps.te
++++ b/bsp/non_plat/mtk_hal_dfps.te
+@@ -16,7 +16,8 @@ hal_server_domain(mtk_hal_dfps, hal_dfps)
+ add_hwservice(hal_dfps_server, mtk_hal_dfps_hwservice)
+ 
+ # sysfs access.
+-r_dir_file(mtk_hal_dfps, proc_net);
++allow mtk_hal_dfps proc_net:dir r_dir_perms;
++allow mtk_hal_dfps proc_net:file r_file_perms;
+ 
+ get_prop(mtk_hal_dfps, hwservicemanager_prop)
+ 
+diff --git a/bsp/plat_private/kpoc_charger.te b/bsp/plat_private/kpoc_charger.te
+index 86446b9..3033d23 100644
+--- a/bsp/plat_private/kpoc_charger.te
++++ b/bsp/plat_private/kpoc_charger.te
+@@ -53,7 +53,8 @@ allow kpoc_charger sysfs_batteryinfo:dir r_dir_perms;
+ allow kpoc_charger sysfs_power:file rw_file_perms;
+ 
+ # Purpose: add sepolicy for sysfs_dt_firmware_android
+-r_dir_file(kpoc_charger, sysfs_dt_firmware_android)
++allow kpoc_charger sysfs_dt_firmware_android:dir r_dir_perms;
++allow kpoc_charger sysfs_dt_firmware_android:file r_file_perms;
+ allow kpoc_charger proc_cmdline:file r_file_perms;
+ 
+ # Purpose: add sepolicy for BatteryNotify
+
+project device/xiaomi/gale/
+diff --git a/AndroidProducts.mk b/AndroidProducts.mk
+index 5d211ac..74840dc 100644
+--- a/AndroidProducts.mk
++++ b/AndroidProducts.mk
+@@ -5,5 +5,5 @@
+ #
+ 
+ PRODUCT_MAKEFILES := \
+-    $(LOCAL_DIR)/voltage_gale.mk
++    $(LOCAL_DIR)/miku_gale.mk
+ 
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index 450ebc5..38cd81a 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -8,6 +8,8 @@ DEVICE_PATH := device/xiaomi/gale
+ 
+ BUILD_BROKEN_DUP_RULES := true
+ 
++BUILD_BROKEN_MISSING_REQUIRED_MODULES := true
++
+ # Enable 64-bit for non-zygote.
+ ZYGOTE_FORCE_64 := true
+ 
+@@ -126,10 +128,10 @@ BOARD_SUPER_PARTITION_SIZE := 7516192768
+ BOARD_SUPER_PARTITION_GROUPS := mediatek_dynamic_partitions
+ BOARD_MEDIATEK_DYNAMIC_PARTITIONS_PARTITION_LIST := system system_ext vendor product
+ BOARD_MEDIATEK_DYNAMIC_PARTITIONS_SIZE := 7515140094
+--include vendor/voltage/config/BoardConfigReservedSize.mk
++-include vendor/miku/config/BoardConfigReservedSize.mk
+ 
+ BOARD_SYSTEMIMAGE_FILE_SYSTEM_TYPE := ext4
+-BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := erofs
++BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+ BOARD_PRODUCTIMAGE_FILE_SYSTEM_TYPE := ext4
+ BOARD_SYSTEM_EXTIMAGE_FILE_SYSTEM_TYPE := ext4
+ 
+@@ -167,6 +169,12 @@ BOARD_AVB_VBMETA_VENDOR_ALGORITHM := SHA256_RSA2048
+ BOARD_AVB_VBMETA_VENDOR_ROLLBACK_INDEX := $(PLATFORM_SECURITY_PATCH_TIMESTAMP)
+ BOARD_AVB_VBMETA_VENDOR_ROLLBACK_INDEX_LOCATION := 3
+ 
++# Disable FEC for ext4 dm-verity compatibility
++BOARD_AVB_SYSTEM_ADD_HASHTREE_FOOTER_ARGS += --do_not_generate_fec
++BOARD_AVB_VENDOR_ADD_HASHTREE_FOOTER_ARGS += --do_not_generate_fec
++BOARD_AVB_PRODUCT_ADD_HASHTREE_FOOTER_ARGS += --do_not_generate_fec
++BOARD_AVB_SYSTEM_EXT_ADD_HASHTREE_FOOTER_ARGS += --do_not_generate_fec
++
+ # Wi-Fi
+ WPA_SUPPLICANT_VERSION := VER_0_8_X
+ BOARD_WPA_SUPPLICANT_DRIVER := NL80211
+@@ -184,7 +192,7 @@ WIFI_HIDL_FEATURE_DUAL_INTERFACE := true
+ # HIDL
+ DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/configs/vintf/manifest.xml
+ DEVICE_MATRIX_FILE += $(DEVICE_PATH)/configs/vintf/compatibility_matrix.xml
+-# DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := vendor/yaap/config/device_framework_matrix.xml $(DEVICE_PATH)/configs/vintf/framework_compatibility_matrix.xml
++DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE := $(DEVICE_PATH)/configs/vintf/framework_compatibility_matrix.xml
+ 
+ # Inherit the proprietary files
+ include vendor/xiaomi/gale/BoardConfigVendor.mk
+diff --git a/device.mk b/device.mk
+index 1b89ac0..e60c6d9 100644
+--- a/device.mk
++++ b/device.mk
+@@ -32,7 +32,7 @@ AB_OTA_POSTINSTALL_CONFIG += \
+ AB_OTA_POSTINSTALL_CONFIG += \
+     RUN_POSTINSTALL_vendor=true \
+     POSTINSTALL_PATH_vendor=bin/checkpoint_gc \
+-    FILESYSTEM_TYPE_vendor=erofs \
++    FILESYSTEM_TYPE_vendor=ext4 \
+     POSTINSTALL_OPTIONAL_vendor=true
+ 
+ PRODUCT_PACKAGES += \
+diff --git a/rootdir/etc/fstab.mt6768 b/rootdir/etc/fstab.mt6768
+index b96694d..3fed442 100644
+--- a/rootdir/etc/fstab.mt6768
++++ b/rootdir/etc/fstab.mt6768
+@@ -1,13 +1,9 @@
+ # Filesystem definitions for MT6768
+ 
+ # System partitions
+-system         /system               erofs   ro      wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey
+ system         /system               ext4    ro      wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey
+-vendor         /vendor               erofs   ro      wait,slotselect,avb,logical,first_stage_mount
+ vendor         /vendor               ext4    ro      wait,slotselect,avb,logical,first_stage_mount
+-product        /product              erofs   ro      wait,slotselect,avb,logical,first_stage_mount
+ product        /product              ext4    ro      wait,slotselect,avb,logical,first_stage_mount
+-system_ext     /system_ext           erofs   ro      wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey
+ system_ext     /system_ext           ext4    ro      wait,slotselect,avb=vbmeta_system,logical,first_stage_mount,avb_keys=/avb/q-gsi.avbpubkey:/avb/r-gsi.avbpubkey:/avb/s-gsi.avbpubkey
+ 
+ # Metadata and userdata
+diff --git a/sepolicy/vendor/charger_vendor.te b/sepolicy/vendor/charger_vendor.te
+index 4279502..f611853 100644
+--- a/sepolicy/vendor/charger_vendor.te
++++ b/sepolicy/vendor/charger_vendor.te
+@@ -1,4 +1,5 @@
+-r_dir_file(charger_vendor, sysfs_power_supply)
++allow charger_vendor sysfs_power_supply:dir r_dir_perms;
++allow charger_vendor sysfs_power_supply:file r_file_perms;
+ 
+ allow charger_vendor sysfs_power_supply:file rw_file_perms;
+ 
+diff --git a/sepolicy/vendor/hal_health_default.te b/sepolicy/vendor/hal_health_default.te
+index a0bd5f9..800951a 100644
+--- a/sepolicy/vendor/hal_health_default.te
++++ b/sepolicy/vendor/hal_health_default.te
+@@ -1,3 +1,4 @@
+-r_dir_file(hal_health_default, sysfs_batteryinfo)
++allow hal_health_default sysfs_batteryinfo:dir r_dir_perms;
++allow hal_health_default sysfs_batteryinfo:file r_file_perms;
+ 
+ allow hal_health_default sysfs:file { open read getattr };
+diff --git a/sepolicy/vendor/mi_thermald.te b/sepolicy/vendor/mi_thermald.te
+index 8ef0152..1cd6c95 100644
+--- a/sepolicy/vendor/mi_thermald.te
++++ b/sepolicy/vendor/mi_thermald.te
+@@ -19,16 +19,20 @@ allow mi_thermald self:capability { fsetid sys_boot };
+ allow mi_thermald mi_thermald:capability { chown fowner };
+ allow mi_thermald mi_thermald:capability2 { wake_alarm block_suspend };
+ 
+-r_dir_file(mi_thermald, sysfs_therm)
++allow mi_thermald sysfs_therm:dir r_dir_perms;
++allow mi_thermald sysfs_therm:file r_file_perms;
+ allow mi_thermald sysfs_therm:file w_file_perms;
+ 
+-r_dir_file(mi_thermald, sysfs_thermal)
++allow mi_thermald sysfs_thermal:dir r_dir_perms;
++allow mi_thermald sysfs_thermal:file r_file_perms;
+ allow mi_thermald sysfs_thermal:file w_file_perms;
+ 
+-r_dir_file(mi_thermald, sysfs)
++allow mi_thermald sysfs:dir r_dir_perms;
++allow mi_thermald sysfs:file r_file_perms;
+ allow mi_thermald sysfs:file w_file_perms;
+ 
+-r_dir_file(mi_thermald, sysfs_leds)
++allow mi_thermald sysfs_leds:dir r_dir_perms;
++allow mi_thermald sysfs_leds:file r_file_perms;
+ allow mi_thermald sysfs_leds:file w_file_perms;
+ 
+ allow mi_thermald sysfs_devices_system_cpu:file rw_file_perms;
+diff --git a/sepolicy/vendor/vendor_init.te b/sepolicy/vendor/vendor_init.te
+index d233887..e770e5e 100644
+--- a/sepolicy/vendor/vendor_init.te
++++ b/sepolicy/vendor/vendor_init.te
+@@ -1,4 +1,8 @@
+-rw_dir_file(vendor_init, sysfs_leds)
+-rw_dir_file(vendor_init, sysfs_ged)
++allow vendor_init sysfs_leds:dir r_dir_perms;
++allow vendor_init sysfs_leds:file rw_file_perms;
++
++allow vendor_init sysfs_ged:dir r_dir_perms;
++allow vendor_init sysfs_ged:file rw_file_perms;
++
+ set_prop(vendor_init, vendor_mtk_audiohal_prop)
+ set_prop(vendor_init, vendor_mtk_audio_prop)
+diff --git a/voltage.dependencies b/voltage.dependencies
+deleted file mode 100644
+index 094bbeb..0000000
+--- a/voltage.dependencies
++++ /dev/null
+@@ -1,31 +0,0 @@
+-[
+-  {
+-    "repository": "android_device_mediatek_sepolicy_vndr",
+-    "target_path": "device/mediatek/sepolicy_vndr"
+-  },
+-  {
+-    "repository": "android_hardware_mediatek",
+-    "target_path": "hardware/mediatek"
+-  },
+-  {
+-    "repository": "android_hardware_xiaomi",
+-    "target_path": "hardware/xiaomi"
+-  },
+-  {
+-    "remote": "github",
+-    "repository": "Mayuri-Chan/android_kernel_xiaomi_gale",
+-    "target_path": "kernel/xiaomi/gale",
+-    "branch": "stable"
+-  },
+-  {
+-    "remote": "github",
+-    "repository": "techyminati/android_vendor_mediatek_ims",
+-    "target_path": "vendor/mediatek/ims",
+-    "branch": "android-16"
+-  },
+-  {
+-    "remote": "github",
+-    "repository": "Mayuri-Chan/proprietary_vendor_xiaomi_gale",
+-    "target_path": "vendor/xiaomi/gale"
+-  }
+-]
+diff --git a/voltage_gale.mk b/voltage_gale.mk
+deleted file mode 100644
+index d96abb0..0000000
+--- a/voltage_gale.mk
++++ /dev/null
+@@ -1,29 +0,0 @@
+-#
+-# Copyright (C) 2024 The LineageOS Project
+-#
+-# SPDX-License-Identifier: Apache-2.0
+-#
+-
+-# Inherit from those products. Most specific first.
+-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit_only.mk)
+-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+-
+-# Inherit from device makefile.
+-$(call inherit-product, device/xiaomi/gale/device.mk)
+-
+-# Inherit some common LineageOS stuff.
+-TARGET_BUILD_GAPPS := true
+-TARGET_ENABLE_BLUR := true
+-$(call inherit-product, vendor/voltage/config/common_full_phone.mk)
+-
+-PRODUCT_NAME := voltage_gale
+-PRODUCT_DEVICE := gale
+-PRODUCT_MANUFACTURER := Xiaomi
+-PRODUCT_BRAND := Redmi
+-PRODUCT_MODEL := 23106RN0DA
+-
+-PRODUCT_GMS_CLIENTID_BASE := android-xiaomi
+-
+-PRODUCT_BUILD_PROP_OVERRIDES += \
+-    BuildDesc="vnd_gale-user 12 SP1A.210812.016 V816.0.5.0.UGPMIXM release-keys"
+-    BuildFingerprint=alps/vnd_gale/gale:12/SP1A.210812.016/V816.0.5.0.UGPMIXM:user/release-keys
+
+project system/extras/
+diff --git a/cppreopts/fstab.postinstall b/cppreopts/fstab.postinstall
+index 6802bb3..cb97f0d 100644
+--- a/cppreopts/fstab.postinstall
++++ b/cppreopts/fstab.postinstall
+@@ -18,9 +18,9 @@
+ 
+ #<src>                    <mnt_point>  <type> <mnt_flags and options> <fs_mgr_flags>
+ system                    /postinstall ext4   ro,nosuid,nodev,noexec  slotselect_other,logical
+-system                    /postinstall erofs  ro,nosuid,nodev,noexec  slotselect_other,logical
++system                    /postinstall ext4  ro,nosuid,nodev,noexec  slotselect_other,logical
+ /dev/block/by-name/system /postinstall ext4   ro,nosuid,nodev,noexec  slotselect_other
+-/dev/block/by-name/system /postinstall erofs  ro,nosuid,nodev,noexec  slotselect_other
++/dev/block/by-name/system /postinstall ext4  ro,nosuid,nodev,noexec  slotselect_other
+ /dev/block/mapper/system /postinstall ext4   ro,nosuid,nodev,noexec  slotselect_other
+-/dev/block/mapper/system /postinstall erofs  ro,nosuid,nodev,noexec  slotselect_other
++/dev/block/mapper/system /postinstall ext4  ro,nosuid,nodev,noexec  slotselect_other
+ 
+
+project vendor/xiaomi/gale/
+diff --git a/BoardConfigVendor.mk b/BoardConfigVendor.mk
+index 18489d5..acea44a 100644
+--- a/BoardConfigVendor.mk
++++ b/BoardConfigVendor.mk
+@@ -2,13 +2,13 @@
+ # Automatically generated file. DO NOT MODIFY
+ #
+ 
+-AB_OTA_PARTITIONS += \
+-    gz \
+-    lk \
+-    logo \
+-    md1img \
+-    preloader_raw \
+-    scp \
+-    spmfw \
+-    sspm \
+-    tee
++#AB_OTA_PARTITIONS += \
++#    gz \
++#    lk \
++#    logo \
++#    md1img \
++#    preloader_raw \
++#    scp \
++#    spmfw \
++#    sspm \
++#    tee
