@@ -56,13 +56,13 @@ fi
 
 cd device/xiaomi/gale
 
-mv "lineage.dependencies" "${ROM}.dependencies"
-mv "lineage_gale.mk" "${ROM}_gale.mk"
+mv "yaap.dependencies" "${ROM}.dependencies"
+mv "yaap_gale.mk" "${ROM}_gale.mk"
 
-sed -i "s/lineage_gale.mk/${ROM}_gale.mk/g" AndroidProducts.mk
-sed -i "s|vendor/lineage|vendor/${ROM}|g" BoardConfig.mk
-sed -i "s|vendor/lineage|vendor/${ROM}|g" "${ROM}_gale.mk"
-sed -i "s/lineage_gale/${ROM}_gale/g" "${ROM}_gale.mk"
+sed -i "s/yaap_gale.mk/${ROM}_gale.mk/g" AndroidProducts.mk
+sed -i "s|vendor/yaap|vendor/${ROM}|g" BoardConfig.mk
+sed -i "s|vendor/yaap|vendor/${ROM}|g" "${ROM}_gale.mk"
+sed -i "s/yaap_gale/${ROM}_gale/g" "${ROM}_gale.mk"
 
 cd ../../../
 
