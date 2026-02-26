@@ -66,7 +66,7 @@ sed -i "s/yaap_gale/${ROM}_gale/g" "${ROM}_gale.mk"
 
 cd ../../../
 
-sed -i 's/name: "libjni_poweroffalarm",/name: "libjni_poweroffalarm",\n    vendor: true,/g' hardware/mediatek/PowerOffAlarm/Android.bp
+sed -i 's/system_ext_specific: true/vendor: true/g' hardware/mediatek/PowerOffAlarm/Android.bp
 sed -i 's/name: "libudfps_extension.xiaomi",/name: "libudfps_extension.xiaomi",\n    vendor: true,/g' hardware/xiaomi/fingerprint/Android.bp
 
 source build/envsetup.sh
