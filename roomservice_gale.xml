@@ -1,9 +1,8 @@
 <manifest>
-  <!-- Define “github” as a remote pointing to GitHub.com
+  <!-- Define “github” as a remote pointing to GitHub.com -->
   <remote  name="github"
            fetch="https://github.com/"
            />
-  -->
 
   <!-- Device Tree -->
   <project name="Mayuri-Chan/android_device_xiaomi_gale"
