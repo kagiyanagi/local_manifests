@@ -32,7 +32,6 @@ repo init -u "$MANIFEST_URL" -b "$BRANCH" --git-lfs --depth=1
 mkdir -p .repo/local_manifests/
 wget -O .repo/local_manifests/roomservice_gale.xml https://raw.githubusercontent.com/kagiyanagi/local_manifests/refs/heads/bliss/roomservice_gale.xml
 repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
-repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
 # /opt/crave/resync.sh
 
 # fix android_device_mediatek_sepolicy_vndr
