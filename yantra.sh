@@ -5,8 +5,8 @@ ROM="cipher"
 MANIFEST_URL="https://github.com/CipherOS/android_manifest.git"
 BRANCH="sixteen"
 
-export BUILD_USERNAME="Ren"
-export BUILD_HOSTNAME="Kagiyanagi"
+export BUILD_USERNAME="ren"
+export BUILD_HOSTNAME="kagiyanagi"
 
 # -- Stuff to build on local machine -- #
 # export USE_CCACHE=1
