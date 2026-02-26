@@ -70,6 +70,7 @@ sed -i 's/system_ext_specific: true/vendor: true/g' hardware/mediatek/PowerOffAl
 sed -i 's/name: "libudfps_extension.xiaomi",/name: "libudfps_extension.xiaomi",\n    vendor: true,/g' hardware/xiaomi/fingerprint/Android.bp
 
 source build/envsetup.sh
-lunch ${ROM}_gale-$(find "$(gettop)/build/release/aconfig" -maxdepth 1 -mindepth 1 -type d -name "[a-z][a-z][0-9][a-z]" -printf '%f\n' | tail -n1)-userdebug
+# $(find "$(gettop)/build/release/aconfig" -maxdepth 1 -mindepth 1 -type d -name "[a-z][a-z][0-9][a-z]" -printf '%f\n' | tail -n1)
+lunch ${ROM}_gale-bp2a-userdebug
 make installclean
 m bacon -j$(nproc --all)
