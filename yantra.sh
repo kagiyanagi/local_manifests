@@ -32,7 +32,7 @@ repo init -u "$MANIFEST_URL" -b "$BRANCH" --git-lfs --depth=1
 mkdir -p .repo/local_manifests/
 wget -O .repo/local_manifests/roomservice_gale.xml https://raw.githubusercontent.com/kagiyanagi/local_manifests/refs/heads/bliss/roomservice_gale.xml
 /opt/crave/resync.sh
-repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
+# repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
 
 # fix android_device_mediatek_sepolicy_vndr
 git clone https://github.com/CipherOS/android_device_cipher_sepolicy -b sixteen device/cipher/sepolicy
@@ -66,6 +66,7 @@ sed -i "s/yaap_gale/${ROM}_gale/g" "${ROM}_gale.mk"
 
 cd ../../../
 
+sed -i '/"libbase_shim"/d' vendor/xiaomi/gale/Android.bp
 sed -i 's/system_ext_specific: true/vendor: true/g' hardware/mediatek/PowerOffAlarm/Android.bp
 sed -i 's/name: "libudfps_extension.xiaomi",/name: "libudfps_extension.xiaomi",\n    vendor: true,/g' hardware/xiaomi/fingerprint/Android.bp
 
