@@ -29,7 +29,7 @@ repo init -u "$MANIFEST_URL" -b "$BRANCH" --git-lfs --depth=1
 mkdir -p .repo/local_manifests/
 wget -O .repo/local_manifests/roomservice_gale.xml https://raw.githubusercontent.com/kagiyanagi/local_manifests/refs/heads/bliss/roomservice_gale.xml
 /opt/crave/resync.sh
-# repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
+repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --retry-fetches=25 --prune
 
 # fix android_device_mediatek_sepolicy_vndr
 # git clone https://github.com/CipherOS/android_device_cipher_sepolicy -b sixteen device/cipher/sepolicy
