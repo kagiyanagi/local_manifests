@@ -75,5 +75,5 @@ source build/envsetup.sh
 # $(find "$(gettop)/build/release/aconfig" -maxdepth 1 -mindepth 1 -type d -name "[a-z][a-z][0-9][a-z]" -printf '%f\n' | tail -n1)
 lunch ${ROM}_gale-bp2a-userdebug
 make installclean
-m --keep-going nothing
+m -k nothing
 # m bacon -j$(nproc --all)
