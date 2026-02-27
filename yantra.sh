@@ -66,6 +66,7 @@ sed -i "s/yaap_gale/${ROM}_gale/g" "${ROM}_gale.mk"
 
 cd ../../../
 
+rm -f hardware/xiaomi/aidl/touch/Android.bp
 sed -i '/"libbase_shim"/d' vendor/xiaomi/gale/Android.bp
 sed -i 's/system_ext_specific: true/vendor: true/g' hardware/mediatek/PowerOffAlarm/Android.bp
 sed -i 's/name: "libudfps_extension.xiaomi",/name: "libudfps_extension.xiaomi",\n    vendor: true,/g' hardware/xiaomi/fingerprint/Android.bp
@@ -74,4 +75,5 @@ source build/envsetup.sh
 # $(find "$(gettop)/build/release/aconfig" -maxdepth 1 -mindepth 1 -type d -name "[a-z][a-z][0-9][a-z]" -printf '%f\n' | tail -n1)
 lunch ${ROM}_gale-bp2a-userdebug
 make installclean
-m bacon -j$(nproc --all)
+m --keep-going nothing
+# m bacon -j$(nproc --all)
