@@ -64,6 +64,19 @@ wget -O .repo/local_manifests/roomservice_gale.xml https://raw.githubusercontent
 # cd ../../../
 
 source build/envsetup.sh
+
+echo "Attempting to fetch GMS..."
+set +e
+avium get_gms
+GMS_STATUS=$?
+set -e
+
+if [ $GMS_STATUS -ne 0 ]; then
+    echo "GMS fetch failed, skipping..."
+else
+    echo "GMS fetched successfully."
+fi
+
 # $(find "$(gettop)/build/release/aconfig" -maxdepth 1 -mindepth 1 -type d -name "[a-z][a-z][0-9][a-z]" -printf '%f\n' | tail -n1)
 lunch lineage_gale-bp2a-userdebug
 make installclean
