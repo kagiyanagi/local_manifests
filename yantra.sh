@@ -80,6 +80,6 @@ fi
 # $(find "$(gettop)/build/release/aconfig" -maxdepth 1 -mindepth 1 -type d -name "[a-z][a-z][0-9][a-z]" -printf '%f\n' | tail -n1)
 lunch lineage_gale-bp2a-userdebug
 make installclean
-rm -rf out/target/product/gale
+rm -rf out/target/product/gale/obj/PACKAGING/check_vintf_all_intermediates/
 # m -k nothing
 m bacon -j$(nproc --all)
