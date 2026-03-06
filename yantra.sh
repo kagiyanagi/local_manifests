@@ -79,7 +79,7 @@ fi
 
 # $(find "$(gettop)/build/release/aconfig" -maxdepth 1 -mindepth 1 -type d -name "[a-z][a-z][0-9][a-z]" -printf '%f\n' | tail -n1)
 lunch lineage_gale-bp2a-userdebug
-# make installclean
-# rm -rf out/target/product/gale/
+make installclean
+rm -rf out/target/product/gale/
 # m -k nothing
 m bacon -j$(nproc --all)
