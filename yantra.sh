@@ -82,4 +82,6 @@ lunch lineage_gale-bp2a-userdebug
 make installclean
 rm -rf out/target/product/gale/
 # m -k nothing
-m bacon -j$(nproc --all)
+# m bacon -j$(nproc --all)
+mka target-files-package otatools
+/opt/crave/crave_sign.sh
